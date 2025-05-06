@@ -1,0 +1,37 @@
+part1
+
+repeat: 
+  not_malicious.Add(c.Get(_i));
+  
+part2
+
+repeat:
+  positionAlloc->Add (Vector (0.0, 30.0, 0.0));
+
+part3
+
+repeat:
+  Ptr<Socket> recvSink_i = Socket::CreateSocket (c.Get (_i), tid);
+  InetSocketAddress local_i = InetSocketAddress (Ipv4Address::GetAny (), 80);
+  recvSink_i->Bind (local_i);
+  recvSink_i->SetRecvCallback (MakeCallback (&ReceivePacket));
+  
+repeat:
+  Ptr<Socket> source_k = Socket::CreateSocket (c.Get (_i), tid);
+  InetSocketAddress remote_k = InetSocketAddress (interfaces.GetAddress (_j, 0), 80);
+  source->Connect (remote_k);
+  
+repeat:
+  Ptr<Ipv4StaticRouting> staticRoute_k = staticRouting.GetStaticRouting(c.Get(_dest)->GetObject<Ipv4>());
+  staticRoute->AddHostRouteTo(interfaces.GetAddress(_i0), interfaces.GetAddress(_i1), 1, 0);
+
+
+  if (tracing == true)
+    {
+      wifiPhy.EnablePcap ("selective", devices);
+    }
+	
+repeat:
+  Simulator::Schedule (Seconds (j.0), &GenerateTraffic,source_i, packetSize, numPackets, interPacketInterval);
+  
+part4
