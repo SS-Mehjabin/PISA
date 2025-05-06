@@ -1,0 +1,34 @@
+  mobility.SetPositionAllocator (positionAlloc);
+  mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
+  mobility.Install (c);
+  
+  /* energy source */
+  BasicEnergySourceHelper basicSourceHelper;
+  // configure energy source
+  basicSourceHelper.Set ("BasicEnergySourceInitialEnergyJ", DoubleValue (500.1));
+  // install source
+  EnergySourceContainer sources = basicSourceHelper.Install (c);
+  /* device energy model */
+  WifiRadioEnergyModelHelper radioEnergyHelper;
+  // configure radio energy model
+  radioEnergyHelper.Set ("TxCurrentA", DoubleValue (0.0174));
+  // install device model
+  DeviceEnergyModelContainer deviceModels = radioEnergyHelper.Install (devices, sources);
+
+
+  Ipv4StaticRoutingHelper staticRouting;
+  InternetStackHelper internet;
+  internet.Install (not_malicious);
+
+  FlowMonitorHelper flowmon;
+  Ptr<FlowMonitor> monitor = flowmon.InstallAll();
+  monitor->Start(Seconds(1.0));
+
+  Ipv4AddressHelper ipv4;
+  NS_LOG_INFO ("Assign IP Addresses.");
+  ipv4.SetBase ("10.1.1.0", "255.255.255.0");
+  Ipv4InterfaceContainer interfaces = ipv4.Assign (devices);
+
+  TypeId tid = TypeId::LookupByName ("ns3::UdpSocketFactory");
+
+  ////
